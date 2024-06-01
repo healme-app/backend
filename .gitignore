@@ -1,0 +1,39 @@
+# Node modules
+/node_modules
+
+# Distribution folder
+/dist
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# TypeScript cache
+*.tsbuildinfo
+
+# IDE/editor specific files
+.vscode/
+.idea/
+.DS_Store
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# npm package lock file
+package-lock.json
+
+# Yarn package lock file
+yarn.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
