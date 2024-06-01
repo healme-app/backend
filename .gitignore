@@ -37,3 +37,7 @@ yarn.lock
 
 # Optional stylelint cache
 .stylelintcache
+
+# Docker
+docker-compose.override.yml
+.dockerignore
