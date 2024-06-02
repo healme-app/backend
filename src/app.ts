@@ -66,12 +66,17 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   const data = error.data;
   res.status(status).json({ message: message, data: data });
 });
+const mongodbUrl = process.env.MONGODB_URL;
 
+if (!mongodbUrl) {
+  console.error("MongoDB URL is not defined in the environment variables.");
+  process.exit(1); // Keluar dari aplikasi dengan kode error
+}
 mongoose
-  .connect(
-    "mongodb+srv://sahalnurdin888:VdqXjEbZ5l58gwW6@cluster0.y7olrqd.mongodb.net/results?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(mongodbUrl)
   .then(() => {
-    app.listen(5000);
+    console.log("Connected to MongoDB");
   })
-  .catch((err) => console.log(err));
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
