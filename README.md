@@ -19,3 +19,4 @@ Healme is a wound detection app that assists users in identifying and managing w
 - Update Profile
 
 ## API Documentation 
+https://documenter.getpostman.com/view/22724606/2sA3Qwbpj6 
