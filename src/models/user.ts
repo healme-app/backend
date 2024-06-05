@@ -5,7 +5,7 @@ import mongoose, { Document, Schema, Model } from "mongoose";
 interface IUser extends Document {
   email: string;
   password: string;
-  name: string;
+  username: string;
   status?: string;
   results?: mongoose.Types.ObjectId[];
 }
@@ -19,7 +19,7 @@ const userSchema: Schema<IUser> = new Schema({
     type: String,
     required: true,
   },
-  name: {
+  username: {
     type: String,
     required: true,
   },

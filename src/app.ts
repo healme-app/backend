@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import multer, { FileFilterCallback } from "multer";
 import predictRoutes from "./routes/predict";
 import authRoutes from "./routes/auth";
+import "dotenv/config";
 
 const app = express();
 
@@ -70,12 +71,12 @@ const mongodbUrl = process.env.MONGODB_URL;
 
 if (!mongodbUrl) {
   console.error("MongoDB URL is not defined in the environment variables.");
-  process.exit(1); // Keluar dari aplikasi dengan kode error
+  process.exit(1);
 }
 mongoose
   .connect(mongodbUrl)
   .then(() => {
-    console.log("Connected to MongoDB");
+    app.listen(5000);
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

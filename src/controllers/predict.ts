@@ -76,7 +76,7 @@ export const createResult = (
       res.status(201).json({
         message: "Result created successfully!",
         resultDb: resultDb,
-        user: { _id: user._id, name: user.name },
+        user: { _id: user._id, username: user.username },
       });
     })
     .catch((err) => {
