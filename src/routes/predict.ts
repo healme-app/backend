@@ -21,7 +21,6 @@ router.post(
   isAuth,
   [
     body("result").trim().isLength({ min: 5 }),
-    body("category").trim().isLength({ min: 3 }),
     body("explanation").trim().isLength({ min: 5 }),
     body("suggestion").trim().isLength({ min: 5 }),
   ],

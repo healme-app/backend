@@ -49,14 +49,14 @@ export const createResult = (
   /** REPLACE ALL '\' WITH '/' */
   const imageUrl = req.file.path.replace("\\", "/");
   const result = req.body.result;
-  const category = req.body.category;
+
   const explanation = req.body.explanation;
   const suggestion = req.body.suggestion;
   let user: any;
   // Create result in db
   const resultDb = new Result({
     result: result,
-    category: category,
+
     explanation: explanation,
     suggestion: suggestion,
     imageUrl: imageUrl,

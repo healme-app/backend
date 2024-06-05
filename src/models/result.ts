@@ -5,7 +5,6 @@ import mongoose, { Document, Schema, Model } from "mongoose";
 interface IResult extends Document {
   result: string;
   imageUrl: string;
-  category: string;
   explanation: string;
   suggestion: string;
   user: mongoose.Types.ObjectId;
@@ -18,10 +17,6 @@ const resultSchema: Schema<IResult> = new Schema(
       required: true,
     },
     imageUrl: {
-      type: String,
-      required: true,
-    },
-    category: {
       type: String,
       required: true,
     },
