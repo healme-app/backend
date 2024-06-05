@@ -13,7 +13,7 @@ const app = express();
 
 const fileStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "src/images"); // Ubah destination ke folder yang benar
+    cb(null, "src/images");
   },
   filename: function (req, file, cb) {
     cb(null, uuidv4());

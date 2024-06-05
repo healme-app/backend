@@ -46,14 +46,14 @@ export const createResult = (
     error.statusCode = 422;
     throw error;
   }
-  /** REPLACE ALL '\' WITH '/' */
+
   const imageUrl = req.file.path.replace("\\", "/");
   const result = req.body.result;
 
   const explanation = req.body.explanation;
   const firstAidRecommendation = req.body.firstAidRecommendation;
   let user: any;
-  // Create result in db
+
   const resultDb = new Result({
     result: result,
 
