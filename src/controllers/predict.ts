@@ -51,14 +51,14 @@ export const createResult = (
   const result = req.body.result;
 
   const explanation = req.body.explanation;
-  const suggestion = req.body.suggestion;
+  const firstAidRecommendation = req.body.firstAidRecommendation;
   let user: any;
   // Create result in db
   const resultDb = new Result({
     result: result,
 
     explanation: explanation,
-    suggestion: suggestion,
+    firstAidRecommendation: firstAidRecommendation,
     imageUrl: imageUrl,
     user: req.userId,
   });
