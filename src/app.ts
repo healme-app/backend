@@ -77,6 +77,7 @@ mongoose
   .connect(mongodbUrl)
   .then(() => {
     app.listen(5000);
+    console.log("App started")
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
