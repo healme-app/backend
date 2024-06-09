@@ -1,34 +1,40 @@
 /** @format */
+
 import path from "path";
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
-import multer, { FileFilterCallback } from "multer";
+import multer from "multer";
 import predictRoutes from "./routes/predict";
 import authRoutes from "./routes/auth";
-import "dotenv/config";
+import dotenv from "dotenv";
+import loadModel from "./services/loadModel";
+
+dotenv.config();
 
 const app = express();
 
 const fileStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: (req, file, cb) => {
     cb(null, "src/images");
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     cb(null, uuidv4());
   },
 });
 
 const fileFilter = (
-  req: Request,
+  req: express.Request,
   file: Express.Multer.File,
-  cb: FileFilterCallback
+  cb: multer.FileFilterCallback
 ) => {
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/gif" ||
+    file.mimetype === "image/bmp"
   ) {
     cb(null, true);
   } else {
@@ -36,18 +42,15 @@ const fileFilter = (
   }
 };
 
-// app.use(bodyParser.urlencoded({ extended: true })); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
 
-// MULTER
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
 
-// STATIC IMAGES
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -60,25 +63,36 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/predict", predictRoutes);
 app.use("/auth", authRoutes);
 
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(error);
-  const status = error.statusCode || 500;
-  const message = error.message;
-  const data = error.data;
-  res.status(status).json({ message: message, data: data });
-});
-const mongodbUrl = process.env.MONGODB_URL;
+app.use(
+  (
+    error: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    console.log(error);
+    const status = error.statusCode || 500;
+    const message = error.message;
+    const data = error.data;
+    res.status(status).json({ message: message, data: data });
+  }
+);
 
-if (!mongodbUrl) {
-  console.error("MongoDB URL is not defined in the environment variables.");
-  process.exit(1);
-}
-mongoose
-  .connect(mongodbUrl)
-  .then(() => {
-    app.listen(5000);
-    console.log("App started")
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
+const startServer = async () => {
+  try {
+    const model = await loadModel();
+    app.locals.model = model;
+
+    const port = process.env.PORT || 3000;
+    const mongodbUri: string = process.env.MONGODB_URI!;
+
+    await mongoose.connect(mongodbUri);
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+  }
+};
+
+startServer();

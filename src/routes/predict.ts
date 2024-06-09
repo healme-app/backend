@@ -1,7 +1,6 @@
 /** @format */
 
 import express from "express";
-import { body } from "express-validator";
 import {
   getResults,
   createResult,
@@ -16,16 +15,7 @@ const router = express.Router();
 router.get("/results", isAuth, getResults);
 
 // POST /predict/result
-router.post(
-  "/result",
-  isAuth,
-  [
-    body("result").trim().isLength({ min: 5 }),
-    body("explanation").trim().isLength({ min: 5 }),
-    body("firstAidRecommendation").trim().isLength({ min: 5 }),
-  ],
-  createResult
-);
+router.post("/result", isAuth, createResult);
 
 // GET /predict/result/resultId
 router.get("/result/:resultId", isAuth, getResult);
