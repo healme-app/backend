@@ -12,11 +12,14 @@
   "description": "",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "chalk": "^5.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-file-routing": "^3.0.3",
-    "express-fileupload": "^1.5.0"
+    "express-fileupload": "^1.5.0",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.4.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.5",

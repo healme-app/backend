@@ -10,6 +10,6 @@ export const config = {
     port
   },
   db: {
-    mongo_url
+    url: mongo_url,
   }
 }
