@@ -7,6 +7,7 @@ interface IResult extends Document {
   imageUrl: string;
   explanation: string;
   firstAidRecommendation: string;
+  confidenceScore: number;
   user: mongoose.Types.ObjectId;
 }
 
@@ -26,6 +27,10 @@ const resultSchema: Schema<IResult> = new Schema(
     },
     firstAidRecommendation: {
       type: String,
+      required: true,
+    },
+    confidenceScore: {
+      type: Number,
       required: true,
     },
     user: {

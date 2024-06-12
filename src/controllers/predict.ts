@@ -54,13 +54,10 @@ export const createResult = async (
     const imageUrl = req.file.path.replace("\\", "/");
     const model = req.app.locals.model;
 
-    // Read the image file
-    const imageBuffer = fs.readFileSync(req.file.path);
-
     // Make prediction
     const { confidenceScore, label } = await predictClassification(
       model,
-      imageBuffer
+      req.file.path
     );
     const { explanation, firstAidRecommendation } =
       await generateContentWithLabel(label);
