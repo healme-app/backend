@@ -28,6 +28,16 @@ router.put(
       .normalizeEmail(),
     body("password").trim().isLength({ min: 5 }),
     body("username").trim().not().isEmpty(),
+    body("dateOfBirth")
+      .isISO8601()
+      .toDate()
+      .withMessage("Please enter a valid date of birth."),
+    body("weight")
+      .isFloat({ min: 0 })
+      .withMessage("Please enter a valid weight."),
+    body("gender")
+      .isIn(["male", "female", "other"])
+      .withMessage("Please enter a valid gender."),
   ],
   signup
 );
@@ -52,6 +62,10 @@ router.put(
       .isString()
       .isIn(["male", "female", "other"])
       .withMessage("Please enter a valid gender."),
+    body("weight")
+      .optional()
+      .isFloat({ min: 0 })
+      .withMessage("Please enter a valid weight."),
   ],
   isAuth,
   updateProfile
@@ -64,16 +78,16 @@ router.get(
     const userId = req.userId;
 
     if (!userId) {
-      const error = new Error("User not authenticated.");
-      (error as any).statusCode = 401;
+      const error: any = new Error("User not authenticated.");
+      error.statusCode = 401;
       throw error;
     }
 
     User.findById(userId)
       .then((user) => {
         if (!user) {
-          const error = new Error("User not found.");
-          (error as any).statusCode = 404;
+          const error: any = new Error("User not found.");
+          error.statusCode = 404;
           throw error;
         }
 
@@ -89,8 +103,8 @@ router.get(
         });
       })
       .catch((err) => {
-        if (!(err as any).statusCode) {
-          (err as any).statusCode = 500;
+        if (!err.statusCode) {
+          err.statusCode = 500;
         }
         next(err);
       });

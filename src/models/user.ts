@@ -6,10 +6,12 @@ interface IUser extends Document {
   email: string;
   password: string;
   username: string;
+  dateOfBirth: Date;
+  age: number | null;
+  gender: "male" | "female" | "other";
+  weight: number;
   status?: string;
   results?: mongoose.Types.ObjectId[];
-  age: number | null;
-  gender: "male" | "female" | "other" | null;
 }
 
 const userSchema: Schema<IUser> = new Schema({
@@ -25,6 +27,10 @@ const userSchema: Schema<IUser> = new Schema({
     type: String,
     required: true,
   },
+  dateOfBirth: {
+    type: Date,
+    required: true,
+  },
   age: {
     type: Number,
     default: null,
@@ -32,13 +38,36 @@ const userSchema: Schema<IUser> = new Schema({
   gender: {
     type: String,
     enum: ["male", "female", "other"],
-    default: null,
+    required: true,
+  },
+  weight: {
+    type: Number,
+    required: true,
   },
   status: {
     type: String,
     default: "Created new account!",
   },
   results: [{ type: Schema.Types.ObjectId, ref: "Result" }],
+});
+
+userSchema.pre<IUser>("save", function (next) {
+  if (this.dateOfBirth) {
+    const now = new Date();
+    const birthDate = new Date(this.dateOfBirth);
+    let age = now.getFullYear() - birthDate.getFullYear();
+    const monthDiff = now.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && now.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    this.age = age;
+  }
+  next();
 });
 
 const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
