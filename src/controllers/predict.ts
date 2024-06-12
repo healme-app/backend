@@ -10,7 +10,7 @@ import generateContentWithLabel from "../services/geminiResponse";
 import predictClassification from "../services/inferenceService";
 
 interface AuthenticatedRequest extends Request {
-  userId?: string;
+  userId: string;
   file?: Express.Multer.File | undefined;
 }
 
@@ -53,14 +53,16 @@ export const createResult = async (
     // REPLACE ALL '\' WITH '/'
     const imageUrl = req.file.path.replace("\\", "/");
     const model = req.app.locals.model;
+    const userId = req.userId;
 
     // Make prediction
     const { confidenceScore, label } = await predictClassification(
       model,
       req.file.path
     );
+
     const { explanation, firstAidRecommendation } =
-      await generateContentWithLabel(label);
+      await generateContentWithLabel(label, userId);
 
     // Create result in db
     const resultDb = new Result({

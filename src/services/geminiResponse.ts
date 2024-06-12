@@ -3,6 +3,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import path from "path";
 import dotenv from "dotenv";
+import getUserData from "../helpers/userData";
 dotenv.config();
 // Specify the path to the .env file
 const envPath = path.resolve(__dirname, "../../.env");
@@ -49,17 +50,22 @@ async function processResultText(text: string) {
 }
 const parts = [
   {
-    text: "Buatlah penjelasan dari penyakit dari kolom predict dan tampilkan hasilnya di kolom result dengan explanation dan firstAidRecommendation yang dibutuhkan dengan menggunakan bahasa indonesia dalam bentuk JSON object.",
+    text: "Buatlah penjelasan dari penyakit dari kolom predict dan tampilkan hasilnya di kolom result dengan explanation dan firstAidrecommendation. Dalam firstAidRecommendation berikan umur, gender, berat dari masing-masing inputan yang dibutuhkan dengan menggunakan bahasa indonesia dalam bentuk JSON object.",
   },
-  { text: "predict: Melanocytic nevus" },
+  { text: "predict: Melanocytic nevus, 20, 65, male" },
   {
-    text: 'result: "explanation": "Melanocytic nevus, yang biasa dikenal sebagai tahi lalat, adalah jenis lesi kulit yang berasal dari melanosit, sel-sel yang bertanggung jawab untuk memproduksi melanin, pigmen yang memberikan warna pada kulit. Tahi lalat ini dapat ada sejak lahir (congenital melanocytic nevi) atau berkembang kemudian dalam hidup (acquired melanocytic nevi). Mereka dapat muncul di mana saja di kulit dan bervariasi dalam warna (biasanya cokelat, hitam, atau kuning tua), ukuran, dan bentuk. Sebagian besar melanocytic nevi bersifat jinak dan tidak menyebabkan masalah kesehatan. Namun, beberapa dapat berkembang menjadi melanoma, suatu bentuk kanker kulit yang serius."\n"firstAidRecommendation":  "Meskipun melanocytic nevi biasanya tidak memerlukan pertolongan pertama, ada beberapa rekomendasi umum untuk memantau dan mengelolanya:Pemeriksaan Diri Secara Teratur:Periksa kulit Anda secara teratur untuk menemukan tahi lalat baru atau perubahan pada yang sudah ada. Gunakan cermin atau minta bantuan seseorang untuk memeriksa area yang sulit dilihat.Ikuti aturan ABCDE untuk mengidentifikasi tahi lalat yang mencurigakan:Asymmetry (Asimetri): Satu setengah dari tahi lalat tidak cocok dengan setengah lainnya.Border (Tepi): Tepi tidak teratur, bergerigi, atau kabur.Color (Warna): Bervariasi dari satu area ke area lain; termasuk nuansa cokelat, hitam, atau kadang-kadang bercak merah, putih, atau biru.Diameter (Diameter): Lebih besar dari 6 milimeter (sekitar ukuran penghapus pensil), meskipun melanoma bisa lebih kecil.Evolving (Berkembang): Perubahan ukuran, bentuk, warna, atau elevasi, atau gejala baru seperti pendarahan, gatal, atau berkerak.Perlindungan dari Matahari:Gunakan tabir surya spektrum luas dengan SPF 30 atau lebih untuk melindungi kulit Anda dari sinar UV yang berbahaya.Kenakan pakaian pelindung, topi, dan kacamata hitam saat berada di luar ruangan.Carilah tempat teduh selama jam matahari puncak (10 AM sampai 4 PM).Hindari Trauma:Lindungi tahi lalat dari cedera atau iritasi, terutama jika berada di area yang rentan terhadap gesekan (misalnya, di bawah tali bra atau ikat pinggang).Jika tahi lalat terluka secara tidak sengaja dan mulai berdarah, bersihkan area tersebut dengan sabun dan air, oleskan antiseptik, dan tutup dengan plester. Pantau tanda-tanda infeksi.Konsultasi Medis:Jadwalkan pemeriksaan kulit secara teratur dengan dokter kulit, terutama jika Anda memiliki riwayat keluarga kanker kulit atau banyak tahi lalat.Minta nasihat medis jika Anda melihat perubahan pada tahi lalat atau jika muncul tahi lalat baru yang tampak tidak biasa.Dengan mengikuti pedoman ini, Anda dapat memantau melanocytic nevi Anda dengan efektif dan mencari perhatian medis segera jika terjadi perubahan yang mengkhawatirkan."',
+    text: 'result: "explanation": "Pasien berusia 20 tahun dengan berat badan 65 kg dan berjenis kelamin laki-laki didiagnosis menderita melanocytic nevus, yang merupakan jenis lesi kulit yang berasal dari melanosit, sel-sel yang bertanggung jawab untuk memproduksi melanin, pigmen yang memberikan warna pada kulit. Melanocytic nevus dapat muncul di mana saja di kulit dan bervariasi dalam warna, ukuran, dan bentuk. Meskipun sebagian besar bersifat jinak, beberapa dapat berkembang menjadi melanoma, suatu bentuk kanker kulit yang serius."\n"firstAidRecommendation":  "Pasien disarankan untuk melakukan pemeriksaan diri secara teratur untuk menemukan tahi lalat baru atau perubahan pada yang sudah ada. Gunakan cermin atau minta bantuan seseorang untuk memeriksa area yang sulit dilihat. Selain itu, penting untuk mengikuti aturan ABCDE untuk mengidentifikasi tahi lalat yang mencurigakan, seperti Asymmetry (Asimetri), Border (Tepi), Color (Warna), Diameter (Diameter), dan Evolving (Berkembang). Untuk melindungi kulit dari paparan sinar matahari, gunakan tabir surya spektrum luas dengan SPF 30 atau lebih, serta kenakan pakaian pelindung, topi, dan kacamata hitam saat berada di luar ruangan. Selalu cari tempat teduh selama jam matahari puncak (10 AM sampai 4 PM). Lindungi tahi lalat dari cedera atau iritasi, terutama jika berada di area yang rentan terhadap gesekan. Jika tahi lalat terluka secara tidak sengaja dan mulai berdarah, bersihkan area tersebut dengan sabun dan air, oleskan antiseptik, dan tutup dengan plester. Pantau tanda-tanda infeksi dan jadwalkan pemeriksaan kulit secara teratur dengan dokter kulit, terutama jika ada riwayat keluarga dengan kanker kulit atau jika terdapat banyak tahi lalat. Minta nasihat medis jika Anda melihat perubahan pada tahi lalat atau jika muncul tahi lalat baru yang tampak tidak biasa."',
   },
-  { text: "predict: " },
+  { text: "predict:" },
 ];
 
-async function generateContentWithLabel(label: string) {
-  parts.push({ text: `predict: ${label}` });
+async function generateContentWithLabel(label: string, userId: string) {
+  console.log(label);
+  const userData = await getUserData(userId);
+  const { age, weight, gender } = userData;
+  console.log(userData);
+
+  parts.push({ text: `predict: ${label}, ${age}, ${weight}, ${gender}` });
   parts.push({ text: "result: " });
 
   const result = await model.generateContent({
@@ -71,7 +77,6 @@ async function generateContentWithLabel(label: string) {
   const { explanation, firstAidRecommendation } = await processResultText(
     resultText
   );
-
   return { explanation, firstAidRecommendation };
 }
 
