@@ -13,13 +13,8 @@ const app: Express = express()
 const APP_VERSION: string = "v1"
 
 // Connect to Database
-mongoose.connect(config.db.url)
-  .then(() => {
-    logger.info('Connected to MongoDB');
-    app.listen(config.server.port, () => {
-      logger.info(`Listening to port ${config.server.port}`);
-    });
-  })
+mongoose.connect(config.DATABASE_URL)
+  .then(() => { logger.info('Connected to MongoDB') })
   .catch((error) => logger.error(error));
 
 // Set Security HTTP headers
@@ -32,11 +27,11 @@ app.use(bodyParser.json())
 // File-based routing
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "unprotected")}))
 
-app.use((req, res, next) => {
+app.use((req: Request, res, next) => {
   if (req.headers.authorization) next()
   else res.status(403).send({forbidden: true, message: "asd"})
 })
 
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")}))
 
-app.listen(config.server.port, () => console.log('Started', path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")))
+app.listen(config.PORT, () => console.log('Started', path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")))
