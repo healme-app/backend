@@ -13,7 +13,9 @@ const app: Express = express()
 const APP_VERSION: string = "v1"
 
 // Connect to Database
-mongoose.connect(config.DATABASE_URL)
+mongoose.connect(config.DATABASE_URL, {
+    dbName: 'development'
+  })
   .then(() => { logger.info('Connected to MongoDB') })
   .catch((error) => logger.error(error));
 
@@ -27,7 +29,7 @@ app.use(bodyParser.json())
 // File-based routing
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "unprotected")}))
 
-app.use((req: Request, res, next) => {
+app.use((req, res, next) => {
   if (req.headers.authorization) next()
   else res.status(403).send({forbidden: true, message: "asd"})
 })
