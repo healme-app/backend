@@ -33,10 +33,9 @@ export const signup = (req: Request, res: Response, next: NextFunction) => {
       return user.save();
     })
     .then((result) => {
-      res.status(201).json({
-        message: "User created!",
-        userId: result._id,
-      });
+      res
+        .status(201)
+        .json({ error: false, message: "User created!", userId: result._id });
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -74,8 +73,9 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
         { expiresIn: "1h" }
       );
       res.status(200).json({
-        token: token,
-        userId: loadedUser._id.toString(),
+        error: false,
+        message: "success",
+        loginResult: { userId: loadedUser._id.toString(), token: token },
       });
     })
     .catch((err) => {
@@ -101,7 +101,15 @@ export const updateProfile = (
         error.statusCode = 404;
         throw error;
       }
-      if (username) {
+      // Update user fields
+      if (username !== undefined) {
+        if (username.length > 20) {
+          const error: any = new Error(
+            "Username must be no longer than 20 characters."
+          );
+          error.statusCode = 422;
+          throw error;
+        }
         user.username = username;
       }
       if (dateOfBirth) {
@@ -129,10 +137,9 @@ export const updateProfile = (
       return user.save();
     })
     .then((result) => {
-      res.status(200).json({
-        message: "User profile updated!",
-        user: result,
-      });
+      res
+        .status(200)
+        .json({ error: false, message: "User profile updated!", user: result });
     })
     .catch((err) => {
       if (!err.statusCode) {

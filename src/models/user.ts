@@ -10,7 +10,6 @@ interface IUser extends Document {
   age: number | null;
   gender: "male" | "female" | "other";
   weight: number;
-  status?: string;
   results?: mongoose.Types.ObjectId[];
 }
 
@@ -43,10 +42,6 @@ const userSchema: Schema<IUser> = new Schema({
   weight: {
     type: Number,
     required: true,
-  },
-  status: {
-    type: String,
-    default: "Created new account!",
   },
   results: [{ type: Schema.Types.ObjectId, ref: "Result" }],
 });

@@ -13,6 +13,7 @@ export const getResults = (req: Request, res: Response, next: NextFunction) => {
   Result.find()
     .then((results) => {
       res.status(200).json({
+        error: false,
         message: "Fetched posts successfully.",
         results: results,
       });
@@ -81,6 +82,7 @@ export const createResult = async (
     (user.results as any)?.push(resultDb);
     await user.save();
     res.status(201).json({
+      error: false,
       message: "Result created successfully!",
       resultDb: resultDb,
       user: { _id: user._id, username: user.username },
@@ -102,10 +104,9 @@ export const getResult = (req: Request, res: Response, next: NextFunction) => {
         error.statusCode = 404;
         throw error;
       }
-      res.status(200).json({
-        message: "Result fetched.",
-        result: result,
-      });
+      res
+        .status(200)
+        .json({ error: false, message: "Result fetched.", result: result });
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -146,7 +147,7 @@ export const deleteResult = (
       return user?.save();
     })
     .then((result) => {
-      res.status(200).json({ message: "Deleted Result." });
+      res.status(200).json({ error: false, message: "Deleted Result." });
     })
     .catch((err) => {
       if (!err.statusCode) {
