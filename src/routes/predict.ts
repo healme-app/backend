@@ -8,6 +8,7 @@ import {
   deleteResult,
 } from "../controllers/predict";
 import isAuth from "../middleware/is-auth";
+import imgUpload from "../modules/uploadImages";
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ const router = express.Router();
 router.get("/results", isAuth, getResults);
 
 // POST /predict/result
-router.post("/result", isAuth, createResult);
+router.post("/result", isAuth, imgUpload.uploadToGcs, createResult);
 
 // GET /predict/result/resultId
 router.get("/result/:resultId", isAuth, getResult);

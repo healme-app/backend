@@ -15,14 +15,7 @@ dotenv.config();
 
 const app = express();
 
-const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "src/images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, uuidv4());
-  },
-});
+const storage = multer.memoryStorage();
 
 const fileFilter = (
   req: express.Request,
@@ -44,11 +37,7 @@ const fileFilter = (
 
 app.use(bodyParser.json()); // application/json
 
-app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
-);
-
-app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(multer({ storage: storage, fileFilter: fileFilter }).single("image"));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");

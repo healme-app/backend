@@ -41,3 +41,6 @@ yarn.lock
 # Docker
 docker-compose.override.yml
 .dockerignore
+
+
+serviceaccountkey.json

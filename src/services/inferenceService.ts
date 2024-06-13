@@ -1,12 +1,19 @@
 /** @format */
 
 import * as tf from "@tensorflow/tfjs-node";
-import * as fs from "fs";
 
-async function predictClassification(model: tf.LayersModel, imagePath: string) {
+async function predictClassification(model: tf.LayersModel, imageUrl: string) {
   try {
     // Read the image file
-    const imageBuffer = fs.readFileSync(imagePath);
+    const { default: fetch } = await import("node-fetch");
+    const response = await fetch(imageUrl);
+    console.log(response);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image from URL: ${response.statusText}`);
+    }
+    const imageArrayBuffer = await response.arrayBuffer(); // Use arrayBuffer() instead of buffer()
+
+    const imageBuffer = Buffer.from(imageArrayBuffer); // Convert ArrayBuffer to Buffer
 
     const imageTensor = tf.node
       .decodeImage(imageBuffer)

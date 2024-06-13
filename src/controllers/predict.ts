@@ -5,14 +5,9 @@ import path from "path";
 import { validationResult } from "express-validator";
 import Result from "../models/result";
 import User from "../models/user";
-import { Request, Response, NextFunction } from "express";
 import generateContentWithLabel from "../services/geminiResponse";
 import predictClassification from "../services/inferenceService";
-
-interface AuthenticatedRequest extends Request {
-  userId: string;
-  file?: Express.Multer.File | undefined;
-}
+import { Request, Response, NextFunction } from "express";
 
 export const getResults = (req: Request, res: Response, next: NextFunction) => {
   Result.find()
@@ -31,7 +26,7 @@ export const getResults = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const createResult = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -50,17 +45,19 @@ export const createResult = async (
       error.statusCode = 422;
       throw error;
     }
-    // REPLACE ALL '\' WITH '/'
-    const imageUrl = req.file.path.replace("\\", "/");
-    const model = req.app.locals.model;
-    const userId = req.userId;
 
-    // Make prediction
+    const imageUrl = (req.file as any).cloudStoragePublicUrl;
+    console.log(imageUrl);
+
+    const { model } = req.app.locals;
+
+    // Make prediction using the image URL
     const { confidenceScore, label } = await predictClassification(
       model,
-      req.file.path
+      imageUrl
     );
 
+    const userId = (req as any).userId;
     const { explanation, firstAidRecommendation } =
       await generateContentWithLabel(label, userId);
 
@@ -71,22 +68,18 @@ export const createResult = async (
       firstAidRecommendation: firstAidRecommendation,
       confidenceScore: confidenceScore,
       imageUrl: imageUrl,
-      user: req.userId,
+      user: userId,
     });
 
     await resultDb.save();
-    const user = await User.findById(req.userId);
-
+    const user = await User.findById(userId);
     if (!user) {
       const error = new Error("User not found.") as any;
       error.statusCode = 404;
       throw error;
     }
-
-    user.results = user.results || [];
-    user.results.push((resultDb._id as any).toString());
+    (user.results as any)?.push(resultDb);
     await user.save();
-
     res.status(201).json({
       message: "Result created successfully!",
       resultDb: resultDb,
@@ -105,7 +98,7 @@ export const getResult = (req: Request, res: Response, next: NextFunction) => {
   Result.findById(resultId)
     .then((result) => {
       if (!result) {
-        const error: any = new Error("Could not find result.");
+        const error = new Error("Could not find result.") as any;
         error.statusCode = 404;
         throw error;
       }
@@ -123,7 +116,7 @@ export const getResult = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const deleteResult = (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -131,31 +124,25 @@ export const deleteResult = (
   Result.findById(resultId)
     .then((result) => {
       if (!result) {
-        const error: any = new Error("Could not find result.");
+        const error = new Error("Could not find result.") as any;
         error.statusCode = 404;
         throw error;
       }
-      if (result.user.toString() !== req.userId) {
-        const error: any = new Error("Not authorized!");
+      if (result.user.toString() !== (req as any).userId) {
+        const error = new Error("Not authorized!") as any;
         error.statusCode = 403;
         throw error;
       }
-      //CHECK LOGGED IN USER
-      clearImage(result.imageUrl);
+
+      // Remove result from database
       return Result.findByIdAndDelete(resultId);
     })
     .then((result) => {
-      return User.findById(req.userId);
+      // Remove result from user's results array
+      return User.findById((req as any).userId);
     })
     .then((user) => {
-      if (!user) {
-        const error: any = new Error("User not found.");
-        error.statusCode = 404;
-        throw error;
-      }
-      user.results = user.results?.filter(
-        (result: any) => result.toString() !== resultId
-      );
+      (user?.results as any)?.pull(resultId);
       return user?.save();
     })
     .then((result) => {
@@ -167,15 +154,4 @@ export const deleteResult = (
       }
       next(err);
     });
-};
-
-const clearImage = (filePath: string) => {
-  fs.unlink(filePath, (err) => {
-    console.log("File path:", filePath);
-    if (err) {
-      console.error("Error deleting file:", err);
-    } else {
-      console.log("File deleted successfully");
-    }
-  });
 };
