@@ -28,7 +28,11 @@ const envSchema = z.object({
     description: 'JSON WEB TOKEN SECRET',
     required_error: 'Please define your json web token secret'
   }),
-  JWT_EXPIRES: z.string()
+  JWT_EXPIRES: z.string(),
+  GOOGLE_API_KEY: z.string({
+    description: 'Google Third Party API Key',
+    required_error: 'Please define your google api key'
+  })
 });
 
 try {
