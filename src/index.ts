@@ -37,3 +37,11 @@ app.use((req, res, next) => {
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")}))
 
 app.listen(config.PORT, () => console.log('Started', path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")))
+
+// TODO: 
+// default error handling [error when received wrong ID]
+
+// jwt token configuration (auth)
+// file upload endpoint
+
+// findAll mongo helpers

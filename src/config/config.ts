@@ -8,8 +8,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string({
     description: 'MongoDB Connection String',
     required_error: 'Please define your mongodb url'
-  })
-    .url(),
+  }).url(),
   NODE_ENV: z.enum([
     'development',
     'test',
@@ -25,6 +24,11 @@ const envSchema = z.object({
     .positive()
     .max(65536, 'options.port should be >= 0 and < 65536')
     .default(3000),
+  JWT_SECRET: z.string({
+    description: 'JSON WEB TOKEN SECRET',
+    required_error: 'Please define your json web token secret'
+  }),
+  JWT_EXPIRES: z.string()
 });
 
 try {

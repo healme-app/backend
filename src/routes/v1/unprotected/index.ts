@@ -1,4 +1,4 @@
-import { Handler, RequestHandler } from "express";
+import { Handler } from "express";
 
 export const GET: Handler = async (req, res) => {
   res.send("OK GET Unprotected")
