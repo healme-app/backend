@@ -1,15 +1,21 @@
 import { Schema, model } from "mongoose";
 import { SEX } from "../types/global.enum";
+import { z } from "zod"
 
-export interface IUser {
-  username: string,
-  email: string,
-  password: string,
-  gender: SEX,
-  birthDate: Date
-}
+export const updateUserDto = z.object({
+  username: z.string(),
+  email: z.string().email(),
+  password: z.string(),
+  gender: z.enum(Object.values(SEX) as any).transform((val) => String(val)),
+  birthDate: z.string().date().transform((val) => new Date(val)),
+  weight: z.number().positive()
+}).partial()
 
-const userSchema = new Schema<IUser>({
+export const createUserDto = updateUserDto.required()
+
+type TUser = z.infer<typeof createUserDto>
+
+const userSchema = new Schema<TUser>({
   username: { 
     type: String, 
     required: true,
@@ -33,10 +39,14 @@ const userSchema = new Schema<IUser>({
   birthDate: {
     type: Date,
     required: true
+  },
+  weight: {
+    type: Number,
+    required: true
   }
 }, {
   timestamps: true,
   versionKey: false
 });
 
-export const User = model<IUser>('User', userSchema);
+export const User = model<TUser>('User', userSchema);

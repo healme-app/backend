@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-import { z } from "zod";
+import { ZodError, z } from "zod";
+import logger from "./logger";
 
 dotenv.config()
 
@@ -8,15 +9,15 @@ const envSchema = z.object({
     description: 'MongoDB Connection String',
     required_error: 'Please define your mongodb url'
   })
-  .url(),
+    .url(),
   NODE_ENV: z.enum([
     'development',
     'test',
     'production'
-  ],{
+  ], {
     description: 'This gets updated depending on your environment'
   })
-  .default('development'),
+    .default('development'),
   PORT: z.coerce
     .number({
       description: ''
@@ -25,5 +26,15 @@ const envSchema = z.object({
     .max(65536, 'options.port should be >= 0 and < 65536')
     .default(3000),
 });
+
+try {
+  envSchema.parse(process.env);
+} catch (error) {
+  if (error instanceof ZodError) {
+    const errorMessages = error.errors.map((issue: any) => (`${issue.path.join('.')} : ${issue.message}`))
+    logger.error(errorMessages)
+    process.exit(1)
+  }
+}
 
 export const config = envSchema.parse(process.env)

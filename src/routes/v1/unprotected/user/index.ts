@@ -1,10 +1,12 @@
 import { Handler, RequestHandler } from "express";
-import { User } from "../../../../models/user";
-import { createUserDto } from "../../../../middlewares/validations/createUser";
+import { User, createUserDto } from "../../../../models/user";
 import { validateData } from "../../../../middlewares/zod-exception";
 
 export const GET: Handler = async (req, res) => {
-  res.send("OK GET Protected")
+  const data = await User.find()
+  const count = await User.countDocuments()
+  
+  res.status(200).send({ data, count })
 }
 
 export const POST: RequestHandler[] = [
@@ -14,12 +16,3 @@ export const POST: RequestHandler[] = [
     res.status(201).send({ data })
   }
 ]
-
-export const PATCH: Handler = async (req, res) => {
-  res.send("OK PATCH Protected")
-}
-
-export const DELETE: Handler = async (req, res) => {
-  res.send("OK DELETE Protected")
-}
-
