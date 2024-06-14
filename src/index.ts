@@ -11,7 +11,7 @@ import logger from "./config/logger";
 import { extractToken } from "./utils";
 import { StatusCodes } from "http-status-codes";
 import { User } from "./models/user";
-import jwt from 'jsonwebtoken'
+import { JWTAuth } from "./modules/auth";
 
 const app: Express = express()
 const APP_VERSION: string = "v1"
@@ -40,7 +40,7 @@ app.use( async (req, res, next) => {
     if(!checkToken) res.status(StatusCodes.FORBIDDEN).send({ message: 'Authorization Failed'})
     else {
       try {
-        const payload = jwt.verify(checkToken, config.JWT_SECRET)
+        const payload = JWTAuth.verify(checkToken)
         const user = await User.findById(payload.sub)
         req['user'] = user
         next()
