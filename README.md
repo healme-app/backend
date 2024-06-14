@@ -3,10 +3,10 @@
 Feature
 - [x] using typescript
 - [x] file-based routing
-- [ ] jwt token authentication
+- [x] jwt token authentication
 - [ ] global middleware
-- [ ] database models
-- [ ] class validator
+- [x] database models
+- [x] class validator
 - [ ] invalid request handler
 - [ ] error filter
 - [ ] response interceptors

@@ -8,6 +8,10 @@ import { Express } from "express";
 import helmet from "helmet";
 import mongoose from "mongoose";
 import logger from "./config/logger";
+import { extractToken } from "./utils";
+import { StatusCodes } from "http-status-codes";
+import { User } from "./models/user";
+import jwt from 'jsonwebtoken'
 
 const app: Express = express()
 const APP_VERSION: string = "v1"
@@ -29,9 +33,24 @@ app.use(bodyParser.json())
 // File-based routing
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "unprotected")}))
 
-app.use((req, res, next) => {
-  if (req.headers.authorization) next()
-  else res.status(403).send({forbidden: true, message: "asd"})
+// General Default Auth with JWT
+app.use( async (req, res, next) => {
+  if(req.headers.authorization) {
+    const checkToken = extractToken(req.headers.authorization)
+    if(!checkToken) res.status(StatusCodes.FORBIDDEN).send({ message: 'Authorization Failed'})
+    else {
+      try {
+        const payload = jwt.verify(checkToken, config.JWT_SECRET)
+        const user = await User.findById(payload.sub)
+        req['user'] = user
+        next()
+      } catch (error) {
+        logger.info(error)
+        if(error instanceof Error) res.status(StatusCodes.FORBIDDEN).send({ message: `${error.message}`})
+        else res.status(StatusCodes.FORBIDDEN).send({ message: 'Internal Server Error'})
+      }
+    }
+  } else res.status(StatusCodes.FORBIDDEN).send({ message: 'Login First'})
 })
 
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")}))
@@ -40,8 +59,5 @@ app.listen(config.PORT, () => console.log('Started', path.join(path.dirname(proc
 
 // TODO: 
 // default error handling [error when received wrong ID]
-
-// jwt token configuration (auth)
 // file upload endpoint
-
 // findAll mongo helpers
