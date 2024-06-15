@@ -1,7 +1,4 @@
-export function extractToken(auth: string): (string | undefined) {
-  let token: string | undefined = undefined;
-  if(auth.startsWith('Bearer ')) {
-    token = auth.substring(7, auth.length)
-  }
-  return token
+export function extractToken(auth: string): string | undefined {
+  const [type, token] = auth.split(' ') ?? [];
+  return type === 'Bearer' ? token : undefined;
 }

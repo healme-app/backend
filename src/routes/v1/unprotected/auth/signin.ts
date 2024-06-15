@@ -15,7 +15,7 @@ export const POST: RequestHandler[] = [
       res.status(StatusCodes.FORBIDDEN).send({ message: 'Email or Password incorrect' })
     }else {
       const correct = await bcrypt.compare(password, data.password)
-      const token = JWTAuth.sign({ sub: data['_id'] })
+      const token = JWTAuth.sign(data['_id'])
       if (!correct) res.status(StatusCodes.FORBIDDEN).send({ message: 'Email or Password incorrect' })
       else res.status(200).send({ data, token })
     }
