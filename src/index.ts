@@ -13,6 +13,8 @@ import { User } from "./models/user";
 import { JWTAuth } from "./modules/auth";
 import transformResponse from "./middlewares/transform-response";
 import httpStatus from "http-status";
+import 'express-async-errors';
+import { errorHandler } from "./middlewares/error";
 
 const app: Express = express()
 const APP_VERSION: string = "v1"
@@ -58,6 +60,9 @@ app.use( async (req, res, next) => {
 })
 
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")}))
+
+// Global Error Handler
+app.use(errorHandler)
 
 app.listen(config.PORT, () => console.log('Started', path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")))
 
