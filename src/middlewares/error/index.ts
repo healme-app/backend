@@ -20,5 +20,5 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
 
   // Unhandled errors
   logger.error(JSON.stringify(err, null, 2));
-  return res.status(500).send({ message: httpStatus["500_NAME"] } );
+  return res.status(500).send({ error: true, message: httpStatus["500_NAME"] } );
 };

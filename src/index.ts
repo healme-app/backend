@@ -67,6 +67,5 @@ app.use(errorHandler)
 app.listen(config.PORT, () => console.log('Started', path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")))
 
 // TODO: 
-// default error handling [error when received wrong ID]
 // file upload endpoint
 // findAll mongo helpers

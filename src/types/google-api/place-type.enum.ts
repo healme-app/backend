@@ -308,4 +308,8 @@ const PlaceType = {
   ...PlaceTypeB,
 };
 
+type PlaceTypeA = keyof typeof PlaceTypeA;
+type PlaceTypeB = keyof typeof PlaceTypeB;
+type PlaceType = keyof typeof PlaceType;
+
 export { PlaceTypeA, PlaceType };

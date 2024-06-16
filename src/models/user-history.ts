@@ -2,8 +2,8 @@ import { Schema, Types, model } from "mongoose";
 import { z } from "zod";
 
 const updateUserHistoryDto = z.object({
-  user: z.instanceof(Object),
-  predict: z.instanceof(Object)
+  user: z.instanceof(Schema.Types.ObjectId),
+  predict: z.instanceof(Schema.Types.ObjectId)
 }).partial()
 
 export const createUserHistoryDto = updateUserHistoryDto.required()
@@ -12,11 +12,11 @@ type TUserHistory = z.infer<typeof createUserHistoryDto>
 
 const UserHistorySchema = new Schema<TUserHistory>({
   user: {
-    type: Object,
+    type: Schema.Types.ObjectId,
     required: true
   },
   predict: {
-    type: Object,
+    type: Schema.Types.ObjectId,
     required: true
   }
 }, {

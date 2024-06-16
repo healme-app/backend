@@ -1,12 +1,14 @@
 import axios from "axios";
-import { GooglePlaceNearbyResponse } from "../types/google-api/nearby-response";
+import { GooglePlace, GooglePlaceNearbyResponse } from "../types/google-api/nearby-response";
 import { GooNearbyFieldMask } from "../types/google-api/nearby-field-mask";
 import { config } from "../config/config";
 import { TGooPlace } from "../models/google-place";
+import logger from "../config/logger";
 
 const BASE_URL = 'https://places.googleapis.com/v1/';
 
-export async function nearbySearch(body: TGooPlace, fieldMask: GooNearbyFieldMask[]) {
+export async function nearbySearch(body: TGooPlace, fieldMask: GooNearbyFieldMask[]): 
+  Promise<GooglePlace[] | { message: string }> {
   try {
     const { latitude, longitude, radius, ...d } = body;
     const reqBody = {
@@ -30,15 +32,15 @@ export async function nearbySearch(body: TGooPlace, fieldMask: GooNearbyFieldMas
     return places;
   } catch (error: any) {
     if (error.response) {
-      console.error(
+      logger.error(
         `Request failed with status code ${error.response.status}`,
       );
-      console.error(error.response.data);
+      logger.error(error.response.data);
     } else if (error.request) {
-      console.error('Request made but no response received');
-      console.error(error.request);
+      logger.error('Request made but no response received');
+      logger.error(error.request);
     } else {
-      console.error('Error setting up the request:', error.message);
+      logger.error(`Error setting up the request: ${error.message}`);
     }
     return { message: 'Google API request failed' };
   }
