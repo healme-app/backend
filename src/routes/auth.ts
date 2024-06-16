@@ -3,7 +3,12 @@
 import express, { Request, Response, NextFunction } from "express";
 import { body } from "express-validator";
 import User from "../models/user";
-import { signup, login, updateProfile } from "../controllers/auth";
+import {
+  signup,
+  login,
+  updateProfile,
+  updatePassword,
+} from "../controllers/auth";
 import isAuth from "../middleware/is-auth";
 
 const router = express.Router();
@@ -112,5 +117,7 @@ router.get(
       });
   }
 );
+
+router.put("/update-password", isAuth, updatePassword);
 
 export default router;

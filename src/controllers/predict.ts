@@ -59,14 +59,14 @@ export const createResult = async (
     );
 
     const userId = (req as any).userId;
-    const { explanation, firstAidRecommendation } =
-      await generateContentWithLabel(label, userId);
+    // const { explanation, firstAidRecommendation } =
+    //   await generateContentWithLabel(label, userId);
 
     // Create result in db
     const resultDb = new Result({
       result: label,
-      explanation: explanation,
-      firstAidRecommendation: firstAidRecommendation,
+      // explanation: explanation,
+      // firstAidRecommendation: firstAidRecommendation,
       confidenceScore: confidenceScore,
       imageUrl: imageUrl,
       user: userId,

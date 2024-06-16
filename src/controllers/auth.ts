@@ -70,7 +70,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
       const token = jwt.sign(
         { email: loadedUser.email, userId: loadedUser._id.toString() },
         "C241PS458",
-        { expiresIn: "1h" }
+        { expiresIn: "30d" }
       );
       res.status(200).json({
         error: false,
@@ -140,6 +140,47 @@ export const updateProfile = (
       res
         .status(200)
         .json({ error: false, message: "User profile updated!", user: result });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+// UPDATE PASSWORD
+export const updatePassword = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = req.userId;
+  const { oldPassword, newPassword } = req.body;
+
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        const error: any = new Error("User not found.");
+        error.statusCode = 404;
+        throw error;
+      }
+      return bcrypt.compare(oldPassword, user.password).then((isMatch) => {
+        if (!isMatch) {
+          const error: any = new Error("Old password is incorrect.");
+          error.statusCode = 401;
+          throw error;
+        }
+        return bcrypt.hash(newPassword, 12).then((hashedPw) => {
+          user.password = hashedPw;
+          return user.save();
+        });
+      });
+    })
+    .then((result) => {
+      res
+        .status(200)
+        .json({ error: false, message: "Password updated successfully!" });
     })
     .catch((err) => {
       if (!err.statusCode) {
