@@ -9,9 +9,10 @@ import helmet from "helmet";
 import mongoose from "mongoose";
 import logger from "./config/logger";
 import { extractToken } from "./utils";
-import { StatusCodes } from "http-status-codes";
 import { User } from "./models/user";
 import { JWTAuth } from "./modules/auth";
+import transformResponse from "./middlewares/transform-response";
+import httpStatus from "http-status";
 
 const app: Express = express()
 const APP_VERSION: string = "v1"
@@ -30,6 +31,9 @@ app.use(cors())
 // Parse JSON Request Body
 app.use(bodyParser.json())
 
+// Transform Response Interceptor
+app.use(transformResponse);
+
 // File-based routing
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "unprotected")}))
 
@@ -37,7 +41,7 @@ app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(p
 app.use( async (req, res, next) => {
   if(req.headers.authorization) {
     const checkToken = extractToken(req.headers.authorization)
-    if(!checkToken) res.status(StatusCodes.FORBIDDEN).send({ message: 'Authorization Failed'})
+    if(!checkToken) res.status(httpStatus.FORBIDDEN).send({ message: 'Authorization Failed'})
     else {
       try {
         const payload = JWTAuth.verify(checkToken)
@@ -46,11 +50,11 @@ app.use( async (req, res, next) => {
         next()
       } catch (error) {
         logger.info(error)
-        if(error instanceof Error) res.status(StatusCodes.FORBIDDEN).send({ message: `${error.message}`})
-        else res.status(StatusCodes.FORBIDDEN).send({ message: 'Internal Server Error'})
+        if(error instanceof Error) res.status(httpStatus.FORBIDDEN).send({ message: `${error.message}`})
+        else res.status(httpStatus.FORBIDDEN).send({ message: 'Internal Server Error'})
       }
     }
-  } else res.status(StatusCodes.FORBIDDEN).send({ message: 'Login First'})
+  } else res.status(httpStatus.FORBIDDEN).send({ message: 'Login First'})
 })
 
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")}))
