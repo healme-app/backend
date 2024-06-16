@@ -1,10 +1,10 @@
-import { FuelType, EVConnectorType } from './google-api.enum';
-import { PlaceType, AddressType } from './google-place-type.enum';
+import { BussinessStatus, EVConnectorType, FuelType, PriceLevel, SecondaryHoursType } from "./index.enum";
+import { PlaceType } from "./place-type.enum";
 
 interface AddressComponent {
   longText: string;
   shortText: string;
-  types: AddressType[];
+  types: PlaceType[];
   languageCode: string;
 }
 
@@ -37,9 +37,9 @@ interface Point {
 }
 
 interface DateInfo {
-  year: integer;
-  month: integer;
-  day: integer;
+  year: number;
+  month: number;
+  day: number;
 }
 
 interface LocalizedText {
@@ -56,7 +56,7 @@ interface FuelPrice {
 interface Money {
   currencyCode: string;
   units: string;
-  nanos: integer;
+  nanos: number;
 }
 
 interface AuthorAttribution {
@@ -109,17 +109,17 @@ interface FuelOption {
 }
 
 interface EVChargeOption {
-  connectorCount: integer;
+  connectorCount: number;
   connectorAggregation: ConnectorAggregation[];
 }
 
 interface ConnectorAggregation {
   type: EVConnectorType;
   maxChargeRateKw: number;
-  count: integer;
+  count: number;
   availabilityLastUpdateTime: string;
-  availableCount: integer;
-  outOfServiceCount: integer;
+  availableCount: number;
+  outOfServiceCount: number;
 }
 
 interface GooglePlace {
