@@ -21,8 +21,8 @@ const AddressComponentSchema = new Schema<AddressComponent>({
 });
 
 const LatLngSchema = new Schema<LatLng>({
-  latitude: { type: Number },
-  longitude: { type: Number }
+  longitude: { type: Number },
+  latitude: { type: Number }
 },{
   _id: false,
 })

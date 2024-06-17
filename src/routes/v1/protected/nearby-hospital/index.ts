@@ -49,6 +49,7 @@ export const GET: RequestHandler[] = [
 
       }
     } else {
+      logger.info('Not Using Google Place API')
       data.push(...check)
     }
     const count = data.length ?? 0

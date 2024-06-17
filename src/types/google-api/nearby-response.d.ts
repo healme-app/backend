@@ -14,8 +14,8 @@ interface PlusCode {
 }
 
 interface LatLng {
-  latitude: number;
   longitude: number;
+  latitude: number;
 }
 
 interface ViewPort {
