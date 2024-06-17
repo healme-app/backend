@@ -3,6 +3,7 @@ import { CustomError } from "./custom-error";
 import httpStatus from "http-status";
 import logger from "../../config/logger";
 import BadRequestError from "./badrequest-error";
+import { MulterError } from "multer";
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if(err instanceof CustomError) {
@@ -16,7 +17,13 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     }
 
     return res.status(statusCode).send({ errors });
-  } else {
+  } else if(err instanceof MulterError){
+    const { name, code } = err
+
+    logger.error(JSON.stringify(err, null, 2));
+    throw new BadRequestError({code: 409, message: `${name} : ${code}`, logging: true })
+  }
+  else {
     // Unhandled errors
     logger.error(JSON.stringify(err, null, 2));
     throw new BadRequestError({code: 500, message: httpStatus["500_NAME"], logging: true })

@@ -5,6 +5,9 @@
 # Environment
 .env
 
+# Credentials Folder
+/src/credentials
+
 # Logs
 logs
 *.log

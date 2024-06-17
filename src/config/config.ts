@@ -32,6 +32,10 @@ const envSchema = z.object({
   GOOGLE_API_KEY: z.string({
     description: 'Google Third Party API Key',
     required_error: 'Please define your google api key'
+  }),
+  GCP_SERVICE_ACC_JSON: z.string({
+    description: 'Google Service Account JSON File Path',
+    required_error: 'Please put your GCP Service Account JSON file on credentials folder'
   })
 });
 

@@ -16,8 +16,10 @@ import httpStatus from "http-status";
 import 'express-async-errors';
 import { errorHandler } from "./middlewares/error";
 import BadRequestError from "./middlewares/error/badrequest-error";
+import multer, { memoryStorage } from "multer";
 
 const app: Express = express()
+export const storage = memoryStorage();
 const APP_VERSION: string = "v1"
 
 // Connect to Database
@@ -37,8 +39,14 @@ app.use(bodyParser.json())
 // Transform Response Interceptor
 app.use(transformResponse);
 
+// FIle Upload using Multer
+app.use(multer({ storage }).single("image")); // set single key param name here
+
 // File-based routing
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "unprotected")}))
+
+// Global Error Handler (On Unprotected Route)
+app.use(errorHandler)
 
 // General Default Auth with JWT
 app.use( async (req, res, next) => {
@@ -62,7 +70,7 @@ app.use( async (req, res, next) => {
 
 app.use(`/api/${APP_VERSION}`, await router({directory: path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")}))
 
-// Global Error Handler
+// Global Error Handler (On Protected Route)
 app.use(errorHandler)
 
 app.listen(config.PORT, () => console.log('Started', path.join(path.dirname(process.argv[1]), "routes", APP_VERSION, "protected")))
