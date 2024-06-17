@@ -11,14 +11,13 @@ async function predictClassification(model: tf.LayersModel, imageUrl: string) {
     if (!response.ok) {
       throw new Error(`Failed to fetch image from URL: ${response.statusText}`);
     }
-    const imageArrayBuffer = await response.arrayBuffer(); // Use arrayBuffer() instead of buffer()
+    const imageArrayBuffer = await response.arrayBuffer();
 
-    const imageBuffer = Buffer.from(imageArrayBuffer); // Convert ArrayBuffer to Buffer
-
+    const imageBuffer = Buffer.from(imageArrayBuffer);
     const imageTensor = tf.node
       .decodeImage(imageBuffer)
-      .resizeNearestNeighbor([224, 224]) // Resize to match model input shape
-      .expandDims() // Add batch dimension
+      .resizeNearestNeighbor([224, 224])
+      .expandDims()
       .toFloat();
 
     // Make prediction
@@ -34,9 +33,16 @@ async function predictClassification(model: tf.LayersModel, imageUrl: string) {
     const confidenceScore = Math.max(...scores) * 100;
 
     const classes = [
-      "Melanocytic nevus",
-      "Squamous cell carcinoma",
-      "Vascular lesion",
+      "Acne and Rosacea",
+      "Atopic Dermatitis",
+      "Bullous Disease",
+      "Cellulitis Impetigo and other Bacterial Infections",
+      "Eczema",
+      "Poison Ivy and other Contact Dermatitis",
+      "Psoriasis pictures Lichen Planus and related diseases",
+      "Scabies Lyme Disease and other Infestations and Bites",
+      "Tinea Ringworm Candidiasis and other Fungal Infections",
+      "Warts Molluscum and other Viral Infections",
     ];
 
     const classResult = tf.argMax(prediction, 1).dataSync()[0];
