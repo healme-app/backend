@@ -19,7 +19,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
   } else {
     // Unhandled errors
     logger.error(JSON.stringify(err, null, 2));
-    throw new BadRequestError({code: 500, message: httpStatus['500_MESSAGE'], logging: true })
+    throw new BadRequestError({code: 500, message: httpStatus["500_NAME"], logging: true })
   }
 
 };
