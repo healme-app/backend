@@ -15,7 +15,7 @@ export const POST: RequestHandler[] = [
   async (req, res) => {
     const data = await User.create(req.body)
       .catch((err) => { 
-        throw new BadRequestError({code: 403, message: err, logging: true})
+        throw new BadRequestError({code: 403, message: err, logging: true })
       })
     res.status(201).send({ data })
   }

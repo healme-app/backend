@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 import { z, ZodError } from 'zod';
+import BadRequestError from './error/badrequest-error';
 
 export function validateData(schema: z.ZodObject<any, any>) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -15,9 +16,9 @@ export function validateData(schema: z.ZodObject<any, any>) {
         //   message: `${issue.path.join('.')} is ${issue.message}`,
         // }
       ))
-        res.status(httpStatus.BAD_REQUEST).json({ error: true, message: errorMessages });
+        throw new BadRequestError({code: 404, message: errorMessages[0], logging: true })
       } else {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ error: true, message:httpStatus['500_MESSAGE'] });
+        throw new BadRequestError({code: 500, message: httpStatus['500_MESSAGE'], logging: true })
       }
     }
   };

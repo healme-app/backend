@@ -15,6 +15,7 @@ import transformResponse from "./middlewares/transform-response";
 import httpStatus from "http-status";
 import 'express-async-errors';
 import { errorHandler } from "./middlewares/error";
+import BadRequestError from "./middlewares/error/badrequest-error";
 
 const app: Express = express()
 const APP_VERSION: string = "v1"
@@ -52,8 +53,8 @@ app.use( async (req, res, next) => {
         next()
       } catch (error) {
         logger.info(error)
-        if(error instanceof Error) res.status(httpStatus.FORBIDDEN).send({ message: `${error.message}`})
-        else res.status(httpStatus.FORBIDDEN).send({ message: 'Internal Server Error'})
+        if(error instanceof Error) throw new BadRequestError({code: 403, message: error.message, logging: true })
+        else throw new BadRequestError({code: 500, message: httpStatus['500_MESSAGE'], logging: true })
       }
     }
   } else res.status(httpStatus.FORBIDDEN).send({ message: 'Login First'})
@@ -69,3 +70,4 @@ app.listen(config.PORT, () => console.log('Started', path.join(path.dirname(proc
 // TODO: 
 // file upload endpoint
 // findAll mongo helpers
+// predict endpoint

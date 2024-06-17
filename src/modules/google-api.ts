@@ -4,11 +4,12 @@ import { GooNearbyFieldMask } from "../types/google-api/nearby-field-mask";
 import { config } from "../config/config";
 import { TGooPlace } from "../models/google-place";
 import logger from "../config/logger";
+import BadRequestError from "../middlewares/error/badrequest-error";
 
 const BASE_URL = 'https://places.googleapis.com/v1/';
 
 export async function nearbySearch(body: TGooPlace, fieldMask: GooNearbyFieldMask[]): 
-  Promise<GooglePlace[] | { message: string }> {
+  Promise<GooglePlace[]> {
   try {
     const { latitude, longitude, radius, ...d } = body;
     const reqBody = {
@@ -42,6 +43,6 @@ export async function nearbySearch(body: TGooPlace, fieldMask: GooNearbyFieldMas
     } else {
       logger.error(`Error setting up the request: ${error.message}`);
     }
-    return { message: 'Google API request failed' };
+    throw new BadRequestError({ code: 404, message: 'Internal Server Error', context: error })
   }
 }

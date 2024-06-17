@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { SEX } from "../types/global.enum";
-import { z } from "zod"
+import { boolean, z } from "zod"
 
 export const updateUserDto = z.object({
   username: z.string(),
@@ -8,12 +8,13 @@ export const updateUserDto = z.object({
   password: z.string(),
   gender: z.enum(Object.values(SEX) as any).transform((val) => String(val)),
   birthDate: z.string().date().transform((val) => new Date(val)),
-  weight: z.number().positive()
+  weight: z.number().positive(),
+  isAdmin: z.boolean()
 }).partial()
 
 export const createUserDto = updateUserDto.required()
 
-type TUser = z.infer<typeof createUserDto>
+export type TUser = z.infer<typeof createUserDto>
 
 const userSchema = new Schema<TUser>({
   username: { 
@@ -43,6 +44,11 @@ const userSchema = new Schema<TUser>({
   weight: {
     type: Number,
     required: true
+  },
+  isAdmin: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 }, {
   timestamps: true,

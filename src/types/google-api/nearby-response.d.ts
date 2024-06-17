@@ -122,6 +122,13 @@ interface ConnectorAggregation {
   outOfServiceCount: number;
 }
 
+interface AccessibilityOptions {
+  wheelchairAccessibleParking?: boolean;
+  wheelchairAccessibleEntrance?: boolean;
+  wheelchairAccessibleRestroom?: boolean;
+  wheelchairAccessibleSeating?: boolean;
+}
+
 interface GooglePlace {
   name: string;
   id: string;
@@ -196,12 +203,7 @@ interface GooglePlace {
   restroom?: boolean;
   goodForGroups?: boolean;
   goodForWatchingSports?: boolean;
-  accessibilityOptions: {
-    wheelchairAccessibleParking?: boolean;
-    wheelchairAccessibleEntrance?: boolean;
-    wheelchairAccessibleRestroom?: boolean;
-    wheelchairAccessibleSeating?: boolean;
-  };
+  accessibilityOptions: AccessibilityOptions;
 }
 
 export class GooglePlaceNearbyResponse {
