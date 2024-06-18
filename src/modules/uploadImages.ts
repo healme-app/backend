@@ -15,12 +15,12 @@ const pathKey = path.resolve("./serviceaccountkey.json");
 
 // TODO: Adjust Storage configuration
 const gcs = new Storage({
-  projectId: "skin-detection-425814",
+  projectId: "healme-424720",
   keyFilename: pathKey,
 });
 
 // TODO: Add the bucket name used
-const bucketName = "skin-image-upload-1";
+const bucketName = "healme-image-upload";
 const bucket = gcs.bucket(bucketName);
 
 function getPublicUrl(filename: string): string {
