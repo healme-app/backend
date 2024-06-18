@@ -6,8 +6,7 @@ Healme is a wound detection app that assists users in identifying and managing w
 - ExpressJs
 - NodeJs
 - MongoDB
-- Cloud Run
-- FireStore
+- Compute Engine
 - Cloud Storage
 
 ## Features
