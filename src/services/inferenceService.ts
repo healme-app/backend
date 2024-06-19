@@ -14,11 +14,18 @@ async function predictClassification(model: tf.LayersModel, imageUrl: string) {
     const imageArrayBuffer = await response.arrayBuffer();
 
     const imageBuffer = Buffer.from(imageArrayBuffer);
+    // const imageTensor = tf.node
+    //   .decodeImage(imageBuffer)
+    //   .resizeNearestNeighbor([224, 224])
+    //   .expandDims()
+    //   .toFloat();
+
     const imageTensor = tf.node
       .decodeImage(imageBuffer)
-      .resizeNearestNeighbor([224, 224])
+      .resizeBilinear([224, 224])
       .expandDims()
-      .toFloat();
+      .toFloat()
+      .div(tf.scalar(255));
 
     // Make prediction
     const prediction = model.predict(imageTensor);
