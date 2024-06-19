@@ -10,6 +10,7 @@ import predictRoutes from "./routes/predict";
 import authRoutes from "./routes/auth";
 import dotenv from "dotenv";
 import loadModel from "./services/loadModel";
+import hospitalRoutes from "./routes/hospital"; // Import rute Google Maps API
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use((req, res, next) => {
 
 app.use("/predict", predictRoutes);
 app.use("/auth", authRoutes);
+app.use("/hospital", hospitalRoutes); // Gunakan rute Google Maps API
 
 app.use(
   (
