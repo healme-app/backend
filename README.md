@@ -1,6 +1,6 @@
 # Healme
 
-Healme is a wound detection app that assists users in identifying and managing wounds through advanced technology. It is available as a mobile application to provide quick and efficient wound care solutions.
+Healme is a skin disease detection app that assists users in identifying and managing skin diseases through advanced technology. It is available as a mobile application to provide quick and efficient wound care solutions.
 
 ## Tech Stack
 - ExpressJs
@@ -10,12 +10,16 @@ Healme is a wound detection app that assists users in identifying and managing w
 - Cloud Storage
 
 ## Features
-- Create a prediction
-- View all prediction
-- View a single prediction
 - Sign Up
 - Login
+- Update Password
+- Get Profile
 - Update Profile
+- Get All Prediction
+- Create a prediction
+- Get A Single Prediction
+- Delete Prediction Result
+
 
 ## API Documentation 
 https://documenter.getpostman.com/view/22724606/2sA3Qwbpj6
