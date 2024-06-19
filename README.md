@@ -19,6 +19,7 @@ Healme is a skin disease detection app that assists users in identifying and man
 - Create a prediction
 - Get A Single Prediction
 - Delete Prediction Result
+- Get Nearby Gmaps API
 
 
 ## API Documentation 
