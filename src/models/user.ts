@@ -8,7 +8,7 @@ interface IUser extends Document {
   username: string;
   dateOfBirth: Date;
   age: number | null;
-  gender: "male" | "female" | "other";
+  gender: "laki-laki" | "perempuan";
   weight: number;
   results?: mongoose.Types.ObjectId[];
 }
@@ -36,7 +36,7 @@ const userSchema: Schema<IUser> = new Schema({
   },
   gender: {
     type: String,
-    enum: ["male", "female", "other"],
+    enum: ["laki-laki", "perempuan"],
     required: true,
   },
   weight: {

@@ -27,7 +27,28 @@ router.post("/nearby-hospital", isAuth, async (req: Request, res: Response) => {
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=hospital&key=${apiKey}`;
 
     const response = await axios.get(url);
-    const hospitals: IHospital[] = response.data.results;
+    const results = response.data.results;
+
+    // Transform the results to match the IHospital interface
+    const hospitals: IHospital[] = results.map((hospital: any) => ({
+      types: hospital.types,
+      location: {
+        longitude: hospital.geometry.location.lng,
+        latitude: hospital.geometry.location.lat,
+      },
+      googleMapsUri: hospital.url || "",
+      regularOpeningHours: {
+        openNow: hospital.opening_hours?.open_now || false,
+        periods: hospital.opening_hours?.periods || [],
+        weekdayDescriptions: hospital.opening_hours?.weekday_text || [],
+        secondaryHoursType: [], // Assuming empty array as the default value
+        specialDays: [], // Assuming empty array as the default value
+      },
+      displayName: hospital.name,
+      shortFormattedAddress: hospital.vicinity,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }));
 
     // Save fetched hospitals to MongoDB (optional based on your needs)
     await Hospital.insertMany(hospitals);

@@ -16,14 +16,7 @@ export interface IPeriod extends Document {
 }
 
 export interface IHospital extends Document {
-  placeId: string;
   types: string[];
-  addressComponents: {
-    longText: string;
-    shortText: string;
-    types: string[];
-    languageCode: string;
-  }[];
   location: {
     longitude: number;
     latitude: number;
@@ -36,27 +29,14 @@ export interface IHospital extends Document {
     secondaryHoursType: string[];
     specialDays: string[];
   };
-  displayName: {
-    text: string;
-    languageCode: string;
-  };
+  displayName: string;
   shortFormattedAddress: string;
-  provider: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const HospitalSchema: Schema = new Schema({
-  placeId: String,
   types: [String],
-  addressComponents: [
-    {
-      longText: String,
-      shortText: String,
-      types: [String],
-      languageCode: String,
-    },
-  ],
   location: {
     longitude: Number,
     latitude: Number,
@@ -82,14 +62,16 @@ const HospitalSchema: Schema = new Schema({
     secondaryHoursType: [String],
     specialDays: [String],
   },
-  displayName: {
-    text: String,
-    languageCode: String,
-  },
+  displayName: String,
   shortFormattedAddress: String,
-  provider: String,
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export default mongoose.model<IHospital>("Hospital", HospitalSchema);

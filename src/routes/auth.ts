@@ -46,7 +46,7 @@ router.put(
       .isFloat({ min: 0 })
       .withMessage("Please enter a valid weight."),
     body("gender")
-      .isIn(["male", "female", "other"])
+      .isIn(["laki-laki", "perempuan"])
       .withMessage("Please enter a valid gender."),
   ],
   signup
@@ -70,7 +70,7 @@ router.put(
     body("gender")
       .optional()
       .isString()
-      .isIn(["male", "female", "other"])
+      .isIn(["laki-laki", "perempuan"])
       .withMessage("Please enter a valid gender."),
     body("weight")
       .optional()
